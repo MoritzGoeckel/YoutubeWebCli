@@ -43,10 +43,19 @@
 				let APIKey = "AIzaSyC1Wh2DcRnFD-u9Yyfg6fxUq9jb6f-cwag",
 					baseURL = "https://www.googleapis.com/youtube/v3/";
 
+				printLine("Welcome to the youtube command line interface", "color_two");
 				printLine("Enter 'help' for a list of commands", "color_two");
 
 				let channelIdsSubscribing = [], requestingChannelVideos = [], videosToWatch = [];
 				addInputListener(function(line){
+					
+					function playVideo(id){
+						printLine(
+							'<iframe style="border: 0; width: 100%;" id="ytplayer" type="text/html" width="100%" height="80%" src="http://www.youtube.com/embed/'+
+							id
+							+'?autoplay=1&showinfo=0 frameborder="0" allowfullscreen/>', "color_two"
+						);
+					}
 					
 					function trackChannel(channelId){
 						console.log(channelId);
@@ -126,11 +135,7 @@
 					if(line.startsWith("watch ")){
 						let num = parseInt(line.substring("track ".length));
 						printLine(videosToWatch[num].name, "color_two");
-						printLine(
-							'<iframe style="border: 0; width: 100%;" id="ytplayer" type="text/html" width="100%" height="80%" src="http://www.youtube.com/embed/'+
-							videosToWatch[num].id
-							+'?autoplay=1&showinfo=0 frameborder="0" allowfullscreen/>', "color_two"
-						);
+						playVideo(videosToWatch[num].id);
 
 						return;	
 					}
@@ -184,7 +189,36 @@
 
 						return;
 					}
+					
+					if(line.startsWith("videos ")){
+						let query = line.substring("videos ".length);
+						$.get(baseURL + "search?part=snippet&q="+query+"&maxResults=10&key=" + APIKey, function(data) {	
+							videosToWatch = [];
+							
+							for(let i in data.items){
+								if(data.items[i].id.kind == "youtube#video")
+									videosToWatch.push({name:data.items[i].snippet.title, id:data.items[i].id.videoId});
+							}
 
+							if(videosToWatch.length == 0)
+								printLine("Nothing found");
+							
+							if(videosToWatch.length == 1){
+								printLine(videosToWatch[0].name, "color_two");						
+								playVideo(videosToWatch[0].id);
+								videosToWatch = [];
+							}
+
+							if(videosToWatch.length > 1){
+								for(let i in videosToWatch)
+									printLine("[" + i + "] " + videosToWatch[i].name, "color_two");
+								printLine("Enter 'watch [id]' to watch a video", "color_two");
+							}
+						});
+
+						return;
+					}
+					
 					if(line == "help"){
 
 						printLine("help", "color_two")
@@ -194,9 +228,9 @@
 						printLine("watch [video number]", "color_two")
 						printLine("channels [name]", "color_two")
 						printLine("clear", "color_two")
-
+						printLine("videos [name]", "color_two")
+						
 						//Todo
-						printLine("videos [name] //TODO", "color_two") //Search videos
 						printLine("tracked //TODO", "color_two") //get videos of tracked channels
 						printLine("untrack [name] //TODO", "color_two")
 						
