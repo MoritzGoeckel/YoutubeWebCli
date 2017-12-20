@@ -125,7 +125,7 @@
 
 					if(line.startsWith("watch ")){
 						let num = parseInt(line.substring("track ".length));
-						printLine(videosToWatch[num].name, "highlight");
+						printLine(videosToWatch[num].name, "color_two");
 						printLine(
 							'<iframe style="border: 0; width: 100%;" id="ytplayer" type="text/html" width="640" height="360" src="http://www.youtube.com/embed/'+
 							videosToWatch[num].id
