@@ -1,0 +1,235 @@
+<html>
+
+	<head>
+		<title>Board</title>
+		<link rel="stylesheet" href="style.css" />
+		<link rel="stylesheet" href="updated.css" />
+	</head>
+
+	<body>
+		<div id="container">
+			<br/>
+			<span id="terminalField"></span>
+			<span id="inputField"></span>
+
+			<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>		
+			<script src="terminal.js"> </script>
+			<script>			
+
+				function timeSince(timeStamp) {
+					var now = new Date(),
+					secondsPast = (now.getTime() - timeStamp.getTime()) / 1000;
+					if(secondsPast < 60){
+					return parseInt(secondsPast) + 's ago';
+					}
+					if(secondsPast < 60*60){
+					return parseInt(secondsPast/60) + 'm ago';
+					}
+					if(secondsPast < 60*60*24){
+					return parseInt(secondsPast/60/60) + 'h ago';
+					}
+					if(secondsPast <= 60*60*24*30){
+					return parseInt(secondsPast/60/60/24) + 'd ago';
+					}
+					if(secondsPast > 60*60*24*30){
+						day = timeStamp.getDate();
+						month = timeStamp.toDateString().match(/ [a-zA-Z]*/)[0].replace(" ","");
+						year = timeStamp.getFullYear() == now.getFullYear() ? "" :  " "+timeStamp.getFullYear();
+						return day + " " + month + year;
+					}
+				}
+
+				let APIKey = "AIzaSyC1Wh2DcRnFD-u9Yyfg6fxUq9jb6f-cwag",
+					baseURL = "https://www.googleapis.com/youtube/v3/";
+
+				//printLine("Do an input", "highlight");
+
+				let channelIdsSubscribing = [], requestingChannelVideos = [], videosToWatch = [];
+				addInputListener(function(line){
+
+					function trackChannel(channelId){
+						console.log(channelId);
+						$.get(baseURL + "channels?part=snippet,contentDetails,statistics&maxResults=50&id=" + channelId + "&key=" + APIKey, function(data) {	
+							console.log(data);
+							channel = {id: data.items[0].id, name:data.items[0].snippet.title, uploads:data.items[0].contentDetails.relatedPlaylists.uploads};
+							printLine("Tracking " + channel.name, "color_two");
+							
+							let tracking = Cookies.getJSON('tracking');
+							if(tracking == undefined || tracking == null)
+								tracking = [];
+
+							tracking.push(channel);
+							Cookies.set('name', tracking, { expires: 99999 });
+						});
+					}
+
+					if(line.startsWith("channels ")){
+						let query = line.substring("channels ".length);						
+						$.get(baseURL + "search?part=snippet&q="+query+"&maxResults=50&key=" + APIKey, function(data) {	
+							for(let i in data.items){
+								if(data.items[i].id.kind == "youtube#channel")
+									printLine(data.items[i].snippet.channelTitle, "color_two");
+							}
+						});
+
+						return;
+					}
+
+					if(channelIdsSubscribing.length != 0){
+						let num = parseInt(line);
+						trackChannel(channelIdsSubscribing[num].id);
+						channelIdsSubscribing = [];
+						
+						return;
+					}
+
+					if(line.startsWith("track ")){
+						let query = line.substring("track ".length);
+						$.get(baseURL + "search?part=snippet&q="+query+"&maxResults=50&key=" + APIKey, function(data) {	
+							
+							for(let i in data.items){
+								if(data.items[i].id.kind == "youtube#channel")
+									channelIdsSubscribing.push({name:data.items[i].snippet.channelTitle, id:data.items[i].id.channelId});
+							}
+
+							if(channelIdsSubscribing.length > 1){
+								for(let i in channelIdsSubscribing)
+									printLine("[" + i + "] " + channelIdsSubscribing[i].name + " " + channelIdsSubscribing[i].id, "color_two");
+								printLine("Type number to track", "color_two");
+							}
+
+							if(channelIdsSubscribing.length == 0)
+								printLine("Nothing found", "color_two");
+
+							if(channelIdsSubscribing.length == 1){
+								trackChannel(channelIdsSubscribing[0].id);
+								channelIdsSubscribing = [];
+							}
+						});
+
+						return;
+					}
+
+					if(line == "tracking"){
+						let tracking = Cookies.getJSON('tracking');
+
+						if(tracking == undefined || tracking == null || tracking.length == 0)
+							printLine("Not tracking any channels, use track [channel name] to track an channel", "color_two")
+
+						for(let i in tracking)
+							printLine(tracking[i].name, "color_two");
+
+						return;
+					}
+
+					if(line.startsWith("watch ")){
+						let num = parseInt(line.substring("track ".length));
+						printLine(videosToWatch[num].name, "highlight");
+						printLine(
+							'<iframe style="border: 0; width: 100%;" id="ytplayer" type="text/html" width="640" height="360" src="http://www.youtube.com/embed/'+
+							videosToWatch[num].id
+							+'?autoplay=1&showinfo=0&frameborder="0"/>', "color_two"
+						);
+
+						return;	
+					}
+
+					function getVideosFromChannelId(channelId){
+						$.get(baseURL + "channels?part=snippet,contentDetails,statistics&maxResults=50&id=" + channelId + "&key=" + APIKey, function(data) {	
+							let playlist = data.items[0].contentDetails.relatedPlaylists.uploads;								
+							videosToWatch = [];
+							$.get(baseURL + "playlistItems?part=snippet%2CcontentDetails&maxResults=5&playlistId=" + playlist + "&key=" + APIKey, function(data) {	
+								for(let i in data.items){
+									printLine("[" + i + "] "+ data.items[i].snippet.title + " (" + timeSince(new Date(data.items[i].contentDetails.videoPublishedAt)) + ")", "color_two");
+									videosToWatch.push({name: data.items[i].snippet.title, date:new Date(data.items[i].contentDetails.videoPublishedAt), id:data.items[i].contentDetails.videoId}); 
+								}
+								printLine("Type watch [id] to watch a video", "color_two");								
+							});						
+						});
+
+						return;						
+					}
+
+					if(requestingChannelVideos.length != 0){
+						let num = parseInt(line);
+						getVideosFromChannelId(requestingChannelVideos[num].id);
+						requestingChannelVideos = [];
+						
+						return;
+					}
+
+					if(line.startsWith("videosof ")){
+						let query = line.substring("videosof ".length);
+						$.get(baseURL + "search?part=snippet&q="+query+"&maxResults=50&key=" + APIKey, function(data) {	
+							for(let i in data.items){
+								if(data.items[i].id.kind == "youtube#channel")
+									requestingChannelVideos.push({name:data.items[i].snippet.channelTitle, id:data.items[i].id.channelId});
+							}
+
+							if(requestingChannelVideos.length == 0)
+								printLine("Nothing found");
+							
+							if(requestingChannelVideos.length == 1){
+								getVideosFromChannelId(requestingChannelVideos[0].id);
+								requestingChannelVideos = [];
+							}
+
+							if(requestingChannelVideos.length > 1){
+								for(let i in requestingChannelVideos)
+									printLine("[" + i + "] " + requestingChannelVideos[i].name, "color_two");
+								printLine("Type number of channel", "color_two");
+							}
+						});
+
+						return;
+					}
+
+					if(line == "help"){
+
+						printLine("help", "color_two")
+						printLine("videosof [channel]", "color_two")
+						printLine("track [channel]", "color_two")
+						printLine("tracking", "color_two")
+						printLine("watch [video number]", "color_two")
+						printLine("channels [name]", "color_two")
+
+						//Todo
+						printLine("videos [name]", "color_two") //Search videos
+						printLine("tracked", "color_two") //get videos of tracked channels
+						printLine("untrack [name]", "color_two")
+						
+						return;
+					}
+
+					printLine("Command not found. Type help", "color_two")
+					/*if(line == "videos"){
+						let tracking = Cookies.getJSON('tracking');
+						for(let i in tracking){
+							printLine(tracking[i].name, "color_two");
+							tracking[i].id
+						}
+					}*/
+
+					/*printLine("You: " + line, "color_two");
+					if(line == "error" || line == "flag" || line == "highlight" || line == "highlight_big")
+						printLine(line, line);
+						
+					if(line == "init")
+						countdown();
+					
+					if(line == "all"){
+						printLine("hallo", "error");
+						printLine("hallo", "flag");
+						printLine("hallo", "highlight");
+						printLine("hallo", "highlight_big");
+					}
+					
+					if(line == "clear")
+						clear();*/
+				});
+			</script>
+		</div>
+	</body>
+
+</html>
