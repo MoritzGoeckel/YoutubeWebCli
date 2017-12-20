@@ -43,11 +43,11 @@
 				let APIKey = "AIzaSyC1Wh2DcRnFD-u9Yyfg6fxUq9jb6f-cwag",
 					baseURL = "https://www.googleapis.com/youtube/v3/";
 
-				//printLine("Do an input", "highlight");
+				printLine("type help for a list of commands", "color_two");
 
 				let channelIdsSubscribing = [], requestingChannelVideos = [], videosToWatch = [];
 				addInputListener(function(line){
-
+					
 					function trackChannel(channelId){
 						console.log(channelId);
 						$.get(baseURL + "channels?part=snippet,contentDetails,statistics&maxResults=50&id=" + channelId + "&key=" + APIKey, function(data) {	
