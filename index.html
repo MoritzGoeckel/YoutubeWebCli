@@ -193,6 +193,7 @@
 						printLine("tracking", "color_two")
 						printLine("watch [video number]", "color_two")
 						printLine("channels [name]", "color_two")
+						printLine("clear", "color_two")
 
 						//Todo
 						printLine("videos [name] //TODO", "color_two") //Search videos
@@ -202,31 +203,20 @@
 						return;
 					}
 
-					printLine("Command not found. Enter 'help' for a list of commands", "color_two")
-					/*if(line == "videos"){
-						let tracking = Cookies.getJSON('tracking');
-						for(let i in tracking){
-							printLine(tracking[i].name, "color_two");
-							tracking[i].id
-						}
-					}*/
+					if(line == "clear"){
+						clear();
+						return;
+					}
 
-					/*printLine("You: " + line, "color_two");
-					if(line == "error" || line == "flag" || line == "highlight" || line == "highlight_big")
-						printLine(line, line);
-						
-					if(line == "init")
-						countdown();
-					
-					if(line == "all"){
+					printLine("Command not found. Enter 'help' for a list of commands", "color_two")
+									
+					/*if(line == "all"){
 						printLine("hallo", "error");
 						printLine("hallo", "flag");
 						printLine("hallo", "highlight");
 						printLine("hallo", "highlight_big");
-					}
+					}*/
 					
-					if(line == "clear")
-						clear();*/
 				});
 			</script>
 		</div>
