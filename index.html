@@ -43,7 +43,7 @@
 				let APIKey = "AIzaSyC1Wh2DcRnFD-u9Yyfg6fxUq9jb6f-cwag",
 					baseURL = "https://www.googleapis.com/youtube/v3/";
 
-				printLine("type help for a list of commands", "color_two");
+				printLine("Enter 'help' for a list of commands", "color_two");
 
 				let channelIdsSubscribing = [], requestingChannelVideos = [], videosToWatch = [];
 				addInputListener(function(line){
@@ -96,7 +96,7 @@
 							if(channelIdsSubscribing.length > 1){
 								for(let i in channelIdsSubscribing)
 									printLine("[" + i + "] " + channelIdsSubscribing[i].name + " " + channelIdsSubscribing[i].id, "color_two");
-								printLine("Type number to track", "color_two");
+								printLine("Enter number to track", "color_two");
 							}
 
 							if(channelIdsSubscribing.length == 0)
@@ -144,7 +144,7 @@
 									printLine("[" + i + "] "+ data.items[i].snippet.title + " (" + timeSince(new Date(data.items[i].contentDetails.videoPublishedAt)) + ")", "color_two");
 									videosToWatch.push({name: data.items[i].snippet.title, date:new Date(data.items[i].contentDetails.videoPublishedAt), id:data.items[i].contentDetails.videoId}); 
 								}
-								printLine("Type watch [id] to watch a video", "color_two");								
+								printLine("Enter 'watch [id]' to watch a video", "color_two");								
 							});						
 						});
 
@@ -178,7 +178,7 @@
 							if(requestingChannelVideos.length > 1){
 								for(let i in requestingChannelVideos)
 									printLine("[" + i + "] " + requestingChannelVideos[i].name, "color_two");
-								printLine("Type number of channel", "color_two");
+								printLine("Enter number of channel", "color_two");
 							}
 						});
 
@@ -195,14 +195,14 @@
 						printLine("channels [name]", "color_two")
 
 						//Todo
-						printLine("videos [name]", "color_two") //Search videos
-						printLine("tracked", "color_two") //get videos of tracked channels
-						printLine("untrack [name]", "color_two")
+						printLine("videos [name] //TODO", "color_two") //Search videos
+						printLine("tracked //TODO", "color_two") //get videos of tracked channels
+						printLine("untrack [name] //TODO", "color_two")
 						
 						return;
 					}
 
-					printLine("Command not found. Type help", "color_two")
+					printLine("Command not found. Enter 'help' for a list of commands", "color_two")
 					/*if(line == "videos"){
 						let tracking = Cookies.getJSON('tracking');
 						for(let i in tracking){
