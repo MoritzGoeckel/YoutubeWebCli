@@ -144,6 +144,8 @@
 
 						videosToWatch = [];
 							
+						printLine("Enter 'watch [id]' to watch a video", "color_two");
+							
 						for(let i in tracking){						
 							let playlist = tracking[i].uploads;								
 							$.get(baseURL + "playlistItems?part=snippet%2CcontentDetails&maxResults=3&playlistId=" + playlist + "&key=" + APIKey, function(data) {	
@@ -152,9 +154,6 @@
 									printLine("  [" + videosToWatch.length + "] "+ data.items[j].snippet.title + " (" + timeSince(new Date(data.items[j].contentDetails.videoPublishedAt)) + ")", "color_two");
 									videosToWatch.push({name: data.items[j].snippet.title, date:new Date(data.items[j].contentDetails.videoPublishedAt), id:data.items[j].contentDetails.videoId}); 
 								}
-
-								if(i == tracking.length - 1)
-									printLine("Enter 'watch [id]' to watch a video", "color_two");
 							});	
 						}
 												
