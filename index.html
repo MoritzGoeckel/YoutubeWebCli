@@ -133,6 +133,33 @@
 
 						return;
 					}
+					
+					if(line == "feed"){
+						let tracking = Cookies.getJSON('tracking');
+
+						if(tracking == undefined || tracking == null || tracking.length == 0){
+							printLine("Not tracking any channels, use track [channel name] to track an channel", "color_two")
+							return;
+						}
+
+						videosToWatch = [];
+							
+						for(let i in tracking){
+							printLine(tracking[i].name, "color_two");
+							
+							let playlist = tracking[i].uploads;								
+							$.get(baseURL + "playlistItems?part=snippet%2CcontentDetails&maxResults=3&playlistId=" + playlist + "&key=" + APIKey, function(data) {	
+								for(let j in data.items){
+									printLine("  [" + j + "] "+ data.items[i].snippet.title + " (" + timeSince(new Date(data.items[i].contentDetails.videoPublishedAt)) + ")", "color_two");
+									videosToWatch.push({name: data.items[i].snippet.title, date:new Date(data.items[i].contentDetails.videoPublishedAt), id:data.items[i].contentDetails.videoId}); 
+								}								
+							});	
+						}
+						
+						printLine("Enter 'watch [id]' to watch a video", "color_two");
+						
+						return;
+					}
 
 					if(line.startsWith("watch ")){
 						let num = parseInt(line.substring("track ".length));
@@ -231,14 +258,33 @@
 						printLine("channels [name]", "color_two")
 						printLine("clear", "color_two")
 						printLine("videos [name]", "color_two")
-						
-						//Todo
-						printLine("tracked //TODO", "color_two") //get videos of tracked channels
-						printLine("untrack [name] //TODO", "color_two")
+						printLine("untrack [name]", "color_two")
+						printLine("feed", "color_two")
 						
 						return;
 					}
 
+					if(line.startsWith("untrack ")){
+						let query = line.substring("videos ".length);
+						
+						let tracking = Cookies.getJSON('tracking');
+						if(tracking == undefined || tracking == null){
+							printLine("You are not tracking any channels", "color_two");
+							return;
+						}
+						
+						for(let i = 0; i < tracking.length; i++){
+							if(tracking[i].name == query || tracking[i].id == query){
+								printLine("Untracking " + tracking[i].name + " (" + tracking[i].id + ")", "color_two");
+								tracking.splice(i, 1);
+								break;
+							}
+						}
+						
+						Cookies.set('tracking', tracking, { expires: 99999 });
+						return;
+					}
+					
 					if(line == "clear"){
 						clear();
 						return;
