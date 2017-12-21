@@ -17,7 +17,7 @@
 			<script src="terminal.js"> </script>
 			<script>			
 
-				const VERSION = 0.1;
+				const VERSION = 0.2;
 			
 				function timeSince(timeStamp) {
 					var now = new Date(),
@@ -150,8 +150,8 @@
 							let playlist = tracking[i].uploads;								
 							$.get(baseURL + "playlistItems?part=snippet%2CcontentDetails&maxResults=3&playlistId=" + playlist + "&key=" + APIKey, function(data) {	
 								for(let j in data.items){
-									printLine("  [" + j + "] "+ data.items[i].snippet.title + " (" + timeSince(new Date(data.items[i].contentDetails.videoPublishedAt)) + ")", "color_two");
-									videosToWatch.push({name: data.items[i].snippet.title, date:new Date(data.items[i].contentDetails.videoPublishedAt), id:data.items[i].contentDetails.videoId}); 
+									printLine("  [" + videosToWatch.length + "] "+ data.items[j].snippet.title + " (" + timeSince(new Date(data.items[j].contentDetails.videoPublishedAt)) + ")", "color_two");
+									videosToWatch.push({name: data.items[j].snippet.title, date:new Date(data.items[j].contentDetails.videoPublishedAt), id:data.items[j].contentDetails.videoId}); 
 								}								
 							});	
 						}
