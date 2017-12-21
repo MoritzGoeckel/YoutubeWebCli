@@ -264,7 +264,7 @@
 					}
 
 					if(line.startsWith("untrack ")){
-						let query = line.substring("videos ".length);
+						let query = line.substring("untrack ".length);
 						
 						let tracking = Cookies.getJSON('tracking');
 						if(tracking == undefined || tracking == null){
