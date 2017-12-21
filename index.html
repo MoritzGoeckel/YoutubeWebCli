@@ -272,13 +272,18 @@
 							return;
 						}
 						
+						let before = tracking.length;
+						
 						for(let i = 0; i < tracking.length; i++){
-							if(tracking[i].name == query || tracking[i].id == query){
+							if(tracking[i].name.toLowerCase() == query.toLowerCase() || tracking[i].id == query){
 								printLine("Untracking " + tracking[i].name + " (" + tracking[i].id + ")", "color_two");
 								tracking.splice(i, 1);
 								break;
 							}
 						}
+						
+						if(before == tracking.length)
+							printLine(query + " not found!");
 						
 						Cookies.set('tracking', tracking, { expires: 99999 });
 						return;
