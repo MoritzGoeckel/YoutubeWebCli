@@ -17,6 +17,8 @@
 			<script src="terminal.js"> </script>
 			<script>			
 
+				const VERSION = 0.1;
+			
 				function timeSince(timeStamp) {
 					var now = new Date(),
 					secondsPast = (now.getTime() - timeStamp.getTime()) / 1000;
@@ -69,7 +71,7 @@
 								tracking = [];
 
 							tracking.push(channel);
-							Cookies.set('name', tracking, { expires: 99999 });
+							Cookies.set('tracking', tracking, { expires: 99999 });
 						});
 					}
 
@@ -220,7 +222,7 @@
 					}
 					
 					if(line == "help"){
-
+						printLine("Version " + VERSION + "; Available commands:", "color_two");
 						printLine("help", "color_two")
 						printLine("videosof [channel]", "color_two")
 						printLine("track [channel]", "color_two")
