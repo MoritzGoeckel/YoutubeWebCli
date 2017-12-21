@@ -275,6 +275,7 @@
 						let before = tracking.length;
 						
 						for(let i = 0; i < tracking.length; i++){
+							console.log(tracking[i].name.toLowerCase() + " == " + query.toLowerCase());
 							if(tracking[i].name.toLowerCase() == query.toLowerCase() || tracking[i].id == query){
 								printLine("Untracking " + tracking[i].name + " (" + tracking[i].id + ")", "color_two");
 								tracking.splice(i, 1);
@@ -283,7 +284,7 @@
 						}
 						
 						if(before == tracking.length)
-							printLine(query + " not found!");
+							printLine(query + " not found!", "color_two");
 						
 						Cookies.set('tracking', tracking, { expires: 99999 });
 						return;
