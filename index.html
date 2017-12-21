@@ -134,6 +134,8 @@
 						return;
 					}
 					
+					//TODO: implement Terminal scrolling
+					//TODO: Sort by time
 					if(line == "feed"){
 						let tracking = Cookies.getJSON('tracking');
 
@@ -149,7 +151,7 @@
 						for(let i in tracking){						
 							let playlist = tracking[i].uploads;								
 							$.get(baseURL + "playlistItems?part=snippet%2CcontentDetails&maxResults=3&playlistId=" + playlist + "&key=" + APIKey, function(data) {	
-								printLine(tracking[i].name, "color_two");
+								printLine(tracking[i].name, "highlight");
 								for(let j in data.items){
 									printLine("  [" + videosToWatch.length + "] "+ data.items[j].snippet.title + " (" + timeSince(new Date(data.items[j].contentDetails.videoPublishedAt)) + ")", "color_two");
 									videosToWatch.push({name: data.items[j].snippet.title, date:new Date(data.items[j].contentDetails.videoPublishedAt), id:data.items[j].contentDetails.videoId}); 
@@ -275,7 +277,6 @@
 						let before = tracking.length;
 						
 						for(let i = 0; i < tracking.length; i++){
-							console.log(tracking[i].name.toLowerCase() + " == " + query.toLowerCase());
 							if(tracking[i].name.toLowerCase() == query.toLowerCase() || tracking[i].id == query){
 								printLine("Untracking " + tracking[i].name + " (" + tracking[i].id + ")", "color_two");
 								tracking.splice(i, 1);
