@@ -2,7 +2,7 @@
 
 	<head>
 		<title>Youtube Cli</title>
-		<link rel="stylesheet" href="style.css" />
+		<link rel="stylesheet" href="TerminalJS/style.css" />
 		<link rel="stylesheet" href="updated.css" />
 	</head>
 
@@ -14,25 +14,25 @@
 
 			<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>		
-			<script src="terminal.js"> </script>
+			<script src="TerminalJS/terminal.js"> </script>
 			<script>			
-
 				const VERSION = 0.2;
 			
 				function timeSince(timeStamp) {
 					var now = new Date(),
 					secondsPast = (now.getTime() - timeStamp.getTime()) / 1000;
+					
 					if(secondsPast < 60){
-					return parseInt(secondsPast) + 's ago';
+						return parseInt(secondsPast) + 's ago';
 					}
 					if(secondsPast < 60*60){
-					return parseInt(secondsPast/60) + 'm ago';
+						return parseInt(secondsPast/60) + 'm ago';
 					}
 					if(secondsPast < 60*60*24){
-					return parseInt(secondsPast/60/60) + 'h ago';
+						return parseInt(secondsPast/60/60) + 'h ago';
 					}
 					if(secondsPast <= 60*60*24*30){
-					return parseInt(secondsPast/60/60/24) + 'd ago';
+						return parseInt(secondsPast/60/60/24) + 'd ago';
 					}
 					if(secondsPast > 60*60*24*30){
 						day = timeStamp.getDate();
@@ -297,13 +297,6 @@
 					}
 
 					printLine("Command not found. Enter 'help' for a list of commands", "color_two")
-									
-					/*if(line == "all"){
-						printLine("hallo", "error");
-						printLine("hallo", "flag");
-						printLine("hallo", "highlight");
-						printLine("hallo", "highlight_big");
-					}*/
 					
 				});
 			</script>

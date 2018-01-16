@@ -1,0 +1,3 @@
+[submodule "TerminalJS"]
+	path = TerminalJS
+	url = https://github.com/MoritzGoeckel/TerminalJS
