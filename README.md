@@ -1,5 +1,5 @@
 # Web Command Line Interface for Youtube
-This is a web based cli for youtube
+This is a web based cli for youtube. [Check it out here](http://moritzgoeckel.com/YoutubeWebCli/)
 
 # Commands
 * help
@@ -12,6 +12,3 @@ This is a web based cli for youtube
 * videos [name]
 * untrack [name]
 * feed
-
-# How does it look?
-[Check it out](http://moritzgoeckel.com/YoutubeWebCli/)
