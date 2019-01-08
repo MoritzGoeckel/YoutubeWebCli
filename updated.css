@@ -5,6 +5,11 @@
 	}
 }
 
+.highlight{
+	margin-top: -5px;
+	margin-bottom: -5px;
+}
+
 body{
 	line-height: 1.5em;
     font-size: 1em;
